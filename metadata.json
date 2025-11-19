@@ -1,0 +1,7 @@
+{
+  "name": "Okay Exercise Companion AI",
+  "description": "Current Version: V0.2\n\nWorking:\n-New button to create new question paper\n-Need transform the just read question to json, and display in html format.???\n-Demo of the concept can work, and \n-Set an URL\n-Create an APP\n\nDone:\n-Support Maths formula now\n-\n\nTake a photo of a quiz with handwritten answers, and let AI grade it for you, providing corrections and a final score.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
