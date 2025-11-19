@@ -3,6 +3,7 @@ import { Language } from '../types';
 import { useI18n } from '../hooks/useI18n';
 import { MenuIcon } from './icons';
 import { useTheme, Theme } from '../hooks/useTheme';
+import { APP_VERSION } from '../config';
 
 export const SettingsMenu: React.FC = () => {
   const { language, setLanguage, t } = useI18n();
@@ -90,6 +91,10 @@ export const SettingsMenu: React.FC = () => {
               {th.name}
             </button>
           ))}
+          <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+           <div className="px-4 py-2 text-xs text-center text-gray-400 dark:text-gray-500">
+            {APP_VERSION}
+          </div>
         </div>
       )}
     </div>

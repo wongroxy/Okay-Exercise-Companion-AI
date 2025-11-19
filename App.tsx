@@ -13,6 +13,7 @@ import { fileToDataUrl } from './utils/fileUtils';
 import { useI18n } from './hooks/useI18n';
 import { SettingsMenu } from './components/SettingsMenu';
 import { Button } from './components/Button';
+import { BACKGROUNDTILE_URL, LOGO_URL } from './config';
 
 type View = 'home' | 'checkAnswer' | 'gradeEssay' | 'database';
 type GradingState = 'initial' | 'grading' | 'results' | 'error';
@@ -151,7 +152,7 @@ export default function App() {
         return null;
       case 'error':
         return (
-            <div className="text-center p-8 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 rounded-lg">
+            <div className="text-center p-8 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 rounded-lg backdrop-blur-sm bg-opacity-90">
                 <h3 className="text-xl font-semibold text-red-800 dark:text-red-200">{t('error.title')}</h3>
                 <p className="mt-2 text-red-700 dark:text-red-300">{error}</p>
             </div>
@@ -161,10 +162,10 @@ export default function App() {
         return (
             <div className="w-full max-w-2xl mx-auto">
                 <div className="mb-6">
-                    <label className="block text-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 bg-white/50 dark:bg-black/30 p-1 rounded w-fit mx-auto px-3 backdrop-blur-sm">
                         {t('checker.chooseModel')}
                     </label>
-                    <div className="relative flex w-full max-w-xs mx-auto p-1 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                    <div className="relative flex w-full max-w-xs mx-auto p-1 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-inner">
                         <button
                             onClick={() => setSelectedModel('gemini-2.5-flash')}
                             className={`w-1/2 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
@@ -233,7 +234,7 @@ export default function App() {
             variant="secondary"
             size="lg"
             onClick={() => navigate('home')}
-            className="w-full flex items-center justify-center"
+            className="w-full flex items-center justify-center shadow-lg"
           >
             {t('nav.backToHome')}
           </Button>
@@ -254,7 +255,7 @@ export default function App() {
                             variant="secondary"
                             size="lg"
                             onClick={() => navigate('home')}
-                            className="w-full sm:w-1/2 flex items-center justify-center"
+                            className="w-full sm:w-1/2 flex items-center justify-center shadow-lg"
                         >
                             {t('button.complete')}
                         </Button>
@@ -262,7 +263,7 @@ export default function App() {
                             variant="primary"
                             size="lg"
                             onClick={resetGrader}
-                            className="w-full sm:w-1/2 flex items-center justify-center"
+                            className="w-full sm:w-1/2 flex items-center justify-center shadow-lg"
                         >
                             {currentView === 'checkAnswer' ? t('checker.gradeAnotherQuiz') : t('checker.gradeAnotherEssay')}
                         </Button>
@@ -277,7 +278,7 @@ export default function App() {
                                 variant="secondary"
                                 size="lg"
                                 onClick={() => navigate('home')}
-                                className="w-full flex items-center justify-center"
+                                className="w-full flex items-center justify-center shadow-lg"
                             >
                                 {t('nav.backToHome')}
                             </Button>
@@ -290,7 +291,7 @@ export default function App() {
                             variant="secondary"
                             size="lg"
                             onClick={() => navigate('home')}
-                            className="w-1/2 flex items-center justify-center"
+                            className="w-1/2 flex items-center justify-center shadow-lg"
                         >
                             {t('nav.backToHome')}
                         </Button>
@@ -298,7 +299,7 @@ export default function App() {
                             variant="primary"
                             size="lg"
                             onClick={isEssay ? handleGradeEssay : handleGradeQuiz}
-                            className="w-1/2 flex items-center justify-center bg-green-600 hover:bg-green-700"
+                            className="w-1/2 flex items-center justify-center bg-green-600 hover:bg-green-700 shadow-lg"
                         >
                             {isEssay ? t('checker.gradeEssay') : t('checker.gradeQuiz')}
                         </Button>
@@ -315,21 +316,41 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex flex-col items-center p-4 sm:p-6 lg:p-8">
-      <header className="w-full max-w-4xl mx-auto mb-8 flex items-center justify-between gap-4">
+    <div 
+      className="
+        min-h-screen 
+        text-gray-800 dark:text-gray-200 
+        flex flex-col items-center 
+        p-4 sm:p-6 lg:p-8 
+        transition-colors duration-300
+        bg-white
+        bg-[image:linear-gradient(rgba(253,250,245,0.8),rgba(253,250,245,0.8)),var(--bg-pattern)]
+        dark:bg-[image:linear-gradient(rgba(0,0,0,0.9),rgba(0,0,0,0.9)),var(--bg-pattern)]
+        bg-[length:auto,200px]
+        bg-[position:0_0,0_0]
+        bg-repeat
+      "
+      style={{
+        '--bg-pattern': `url(${BACKGROUNDTILE_URL})`,
+      } as React.CSSProperties}
+    >
+      <header className="relative z-50 w-full max-w-4xl mx-auto mb-8 flex items-center justify-between gap-4 p-4">
         {/* Left Slot */}
         <div className="flex justify-start" style={{ flex: '1 0 0' }}>
-          {/* Home button was here, removed as per request */}
+          {/* Placeholder for left alignment balance */}
         </div>
         
         {/* Center Slot */}
-        <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+        <div className="text-center flex flex-col items-center">
+            <img src={LOGO_URL} alt="Eduvantech Logo" className="h-12 sm:h-16 mb-2 object-contain" />
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 drop-shadow-sm">
               {t('app.title')}
             </h1>
-            <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
-              {getSubtitle()}
-            </p>
+            <div className="flex flex-col items-center gap-1 mt-2">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-medium">
+                {getSubtitle()}
+              </p>
+            </div>
         </div>
 
         {/* Right Slot */}
