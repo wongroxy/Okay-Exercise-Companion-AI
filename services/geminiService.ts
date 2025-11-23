@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from '@google/genai';
 import { GradingResult, EssayGradingResult, ModelType, ReviewQuestion, GeneratedQuestion } from '../types';
 import { fileToBase64 } from '../utils/fileUtils';
@@ -11,6 +12,10 @@ const PRICING_DATA = {
   },
   'gemini-2.5-pro': {
     INPUT_USD_PER_1K_TOKENS: 0.0035,
+    OUTPUT_USD_PER_1K_TOKENS: 0.0105,
+  },
+  'gemini-3-pro-preview': {
+    INPUT_USD_PER_1K_TOKENS: 0.0035, // Estimated same as 2.5 pro for preview
     OUTPUT_USD_PER_1K_TOKENS: 0.0105,
   }
 };
@@ -131,7 +136,7 @@ const calculateCost = (model: ModelType, usageMetadata: any) => {
             totalTokens: totalTokenCount,
         };
 
-        const modelPricing = PRICING_DATA[model];
+        const modelPricing = PRICING_DATA[model] || PRICING_DATA['gemini-2.5-pro'];
         const inputCostUSD = (promptTokenCount / 1000) * modelPricing.INPUT_USD_PER_1K_TOKENS;
         const outputCostUSD = (candidatesTokenCount / 1000) * modelPricing.OUTPUT_USD_PER_1K_TOKENS;
         const totalCostUSD = inputCostUSD + outputCostUSD;

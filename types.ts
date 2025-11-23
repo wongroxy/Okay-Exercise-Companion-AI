@@ -1,7 +1,8 @@
+
 // FIX: Removed circular self-import.
 
 // FIX: Define ModelType and remove circular self-import.
-export type ModelType = 'gemini-2.5-flash' | 'gemini-2.5-pro';
+export type ModelType = 'gemini-2.5-flash' | 'gemini-2.5-pro' | 'gemini-3-pro-preview';
 
 // ADD: A type for supported languages.
 export type Language = 'en' | 'zh-TW' | 'zh-CN';
@@ -104,6 +105,7 @@ export interface QuizSession {
   imageUrls: string[];
   score: number;
   totalQuestions: number;
+  model?: string;
 }
 
 export interface GeneratedQuestion {

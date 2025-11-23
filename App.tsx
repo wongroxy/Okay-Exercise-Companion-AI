@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { ImageCapture } from './components/ImageCapture';
 import { ResultsDisplay } from './components/ResultsDisplay';
@@ -165,24 +166,33 @@ export default function App() {
                     <label className="block text-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 bg-white/50 dark:bg-black/30 p-1 rounded w-fit mx-auto px-3 backdrop-blur-sm">
                         {t('checker.chooseModel')}
                     </label>
-                    <div className="relative flex w-full max-w-xs mx-auto p-1 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-inner">
+                    <div className="relative flex w-full max-w-md mx-auto p-1 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-inner">
                         <button
                             onClick={() => setSelectedModel('gemini-2.5-flash')}
-                            className={`w-1/2 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
+                            className={`w-1/3 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
                                 selectedModel === 'gemini-2.5-flash' ? 'bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600'
                             }`}
                         >
                             {t('checker.model.flash.name')}
-                            <p className="text-xs text-gray-400 dark:text-gray-500">{t('checker.model.flash.description')}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 hidden sm:block">{t('checker.model.flash.description')}</p>
                         </button>
                         <button
                             onClick={() => setSelectedModel('gemini-2.5-pro')}
-                            className={`w-1/2 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
+                            className={`w-1/3 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
                                 selectedModel === 'gemini-2.5-pro' ? 'bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600'
                             }`}
                         >
                             {t('checker.model.pro.name')}
-                            <p className="text-xs text-gray-400 dark:text-gray-500">{t('checker.model.pro.description')}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 hidden sm:block">{t('checker.model.pro.description')}</p>
+                        </button>
+                        <button
+                            onClick={() => setSelectedModel('gemini-3-pro-preview')}
+                            className={`w-1/3 rounded-md py-2 text-sm font-medium transition-colors focus:outline-none ${
+                                selectedModel === 'gemini-3-pro-preview' ? 'bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600'
+                            }`}
+                        >
+                            {t('checker.model.3.name')}
+                            <p className="text-xs text-gray-400 dark:text-gray-500 hidden sm:block">{t('checker.model.3.description')}</p>
                         </button>
                     </div>
                 </div>

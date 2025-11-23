@@ -3,7 +3,6 @@ import { ReviewQuestion, QuizSession, SavedEssay } from '../types';
 import { getQuizSessions, clearQuizSessions, updateReviewQuestion, getSavedEssays, clearSavedEssays } from '../services/databaseService';
 import { XCircleIcon, DatabaseIcon, CheckCircleIcon } from './icons';
 import { EssayResultsDisplay } from './EssayResultsDisplay';
-import { PdfGeneratorModal } from './PdfGeneratorModal';
 import { MathText } from './MathText';
 import { useI18n } from '../hooks/useI18n';
 import { Button } from './Button';
@@ -89,6 +88,13 @@ const ReviewQuestionCard: React.FC<{
         });
         setReanswerValue('');
     };
+
+    // Show answer if: 
+    // 1. It was originally correct (though these are usually filtered out in review view)
+    // 2. User has solved it in review
+    // 3. User has tried at least once and failed
+    // 4. User explicitly requested to see it
+    const shouldShowAnswer = item.isCorrect || item.isSolved || isFirstAttemptFailed || showCorrectAnswer;
     
     return (
       <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md mb-4 transition-all duration-300 overflow-hidden border-l-4 ${item.isCorrect ? 'border-blue-500' : (item.isSolved ? 'border-green-500' : 'border-red-500')}`}>
@@ -115,7 +121,8 @@ const ReviewQuestionCard: React.FC<{
                         <MathText text={item.studentAnswer} />
                     )}
                 </p>
-                 {!item.isCorrect && (
+                 {/* Only show correct answer if the user has attempted it or solved it */}
+                 {!item.isCorrect && shouldShowAnswer && (
                     <div className="text-sm text-green-700 dark:text-green-400 mt-2">
                         <span className="font-semibold">{t('questionCard.correctAnswer')} </span>
                         <MathText text={item.correctAnswer} />
@@ -177,6 +184,18 @@ const ReviewQuestionCard: React.FC<{
                                 {t('reviewCard.check')}
                             </Button>
                         </div>
+                        
+                        {/* Option to show answer if user is stuck */}
+                        {!shouldShowAnswer && (
+                             <div className="mt-2 text-right">
+                                <button 
+                                    onClick={() => { setShowCorrectAnswer(true); setShowExplanation(true); }}
+                                    className="text-xs text-gray-500 dark:text-gray-400 underline hover:text-blue-600 dark:hover:text-blue-400"
+                                >
+                                    {t('reviewCard.showCorrectAnswer')}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
                 
@@ -209,9 +228,8 @@ const SessionAccordion: React.FC<{
     defaultOpen?: boolean,
     onUpdateQuestion: (sessionId: number, questionId: string, updates: Partial<Omit<ReviewQuestion, 'id'>>) => void;
     onViewImages: (urls: string[]) => void;
-    onGeneratePdf: (session: QuizSession) => void;
     filteredQuestions: ReviewQuestion[];
-}> = ({ session, defaultOpen = false, onUpdateQuestion, onViewImages, onGeneratePdf, filteredQuestions }) => {
+}> = ({ session, defaultOpen = false, onUpdateQuestion, onViewImages, filteredQuestions }) => {
     const { t, language } = useI18n();
     const [isOpen, setIsOpen] = useState(defaultOpen);
     
@@ -252,14 +270,6 @@ const SessionAccordion: React.FC<{
                         title={t('database.viewImages')}
                     >
                        {t('database.viewImages')}
-                    </Button>
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => onGeneratePdf(session)}
-                        title={t('database.generatePdfButton')}
-                    >
-                       {t('database.generatePdfButton')}
                     </Button>
                 </div>
             </div>
@@ -327,7 +337,6 @@ export const DatabaseScreen: React.FC = () => {
     const [view, setView] = useState<ViewType>('quizzes');
     const [quizFilter, setQuizFilter] = useState<FilterType>('notSolved');
     const [viewingImages, setViewingImages] = useState<string[] | null>(null);
-    const [sessionForPdf, setSessionForPdf] = useState<QuizSession | null>(null);
 
     const loadData = useCallback(() => {
         const quizzes = getQuizSessions();
@@ -391,7 +400,6 @@ export const DatabaseScreen: React.FC = () => {
                         defaultOpen={index === 0}
                         onUpdateQuestion={handleUpdateQuestion}
                         onViewImages={setViewingImages}
-                        onGeneratePdf={setSessionForPdf}
                         filteredQuestions={session.questions}
                     />
                 ));
@@ -437,12 +445,6 @@ export const DatabaseScreen: React.FC = () => {
     return (
         <div className="w-full max-w-4xl mx-auto p-4">
              {viewingImages && <ImageModal imageUrls={viewingImages} onClose={() => setViewingImages(null)} />}
-             {sessionForPdf && (
-                <PdfGeneratorModal 
-                    session={sessionForPdf}
-                    onClose={() => setSessionForPdf(null)} 
-                />
-             )}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('database.title')}</h2>
                 <div className="flex items-center gap-4">
