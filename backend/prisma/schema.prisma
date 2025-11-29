@@ -1,0 +1,92 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model QuizDatabase {
+  id             String           @id @default(uuid())
+  timestamp      BigInt
+  score          Int
+  totalQuestions Int
+  imageUrls      String // JSON string of array
+  model          String?
+  questions      ReviewQuestion[]
+  userId         String?
+  user           User?            @relation(fields: [userId], references: [id])
+}
+
+model ReviewQuestion {
+  id               String       @id
+  quizSessionId    String
+  quizSession      QuizDatabase @relation(fields: [quizSessionId], references: [id], onDelete: Cascade)
+  section          String
+  questionNumber   String
+  question         String
+  questionType     String
+  choices          String? // JSON string
+  studentAnswer    String
+  isCorrect        Boolean
+  correctAnswer    String?
+  explanation      String?
+  boundingBox      String? // JSON string
+  isSolved         Boolean
+  reanswerAttempts Int
+}
+
+model EssayDatabase {
+  id                  String @id @default(uuid())
+  timestamp           BigInt
+  title               String
+  contentScore        Int
+  expressionScore     Int
+  structureScore      Int
+  punctuationScore    Int
+  typoBonus           Int
+  totalScore          Int
+  transcribedText     String
+  overallComment      String
+  feedbackContent     String
+  feedbackExpression  String
+  feedbackStructure   String
+  feedbackPunctuation String
+  tokenUsage          String? // JSON
+  cost                String? // JSON
+  imageUrls           String // JSON string
+  userId              String?
+  user                User?   @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id        String          @id @default(uuid())
+  email     String          @unique
+  name      String
+  googleId  String          @unique
+  avatarUrl String?
+  sessions  QuizDatabase[]
+  essays    EssayDatabase[]
+  logins    UserLogin[]
+  actions   UserAction[]
+}
+
+model UserLogin {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  timestamp DateTime @default(now())
+  loginTimeHKT String // Formatted string for HKT
+}
+
+model UserAction {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  actionType   String   // "批改練習" or "批改作文"
+  modelUsed    String?
+  costHKD      Float?
+  timestamp    DateTime @default(now())
+  actionTimeHKT String // Formatted string for HKT
+}

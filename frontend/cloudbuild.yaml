@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '--build-arg', 'VITE_API_BASE_URL=${_VITE_API_BASE_URL}', '--build-arg', 'VITE_GEMINI_API_KEY=${_VITE_GEMINI_API_KEY}', '-t', 'us-west1-docker.pkg.dev/exercise-ai-477313/exercise-companion-repo/frontend:latest', '.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'us-west1-docker.pkg.dev/exercise-ai-477313/exercise-companion-repo/frontend:latest' ]
+images:
+  - 'us-west1-docker.pkg.dev/exercise-ai-477313/exercise-companion-repo/frontend:latest'
+substitutions:
+  _VITE_API_BASE_URL: 'http://localhost:3000/api'
+  _VITE_GEMINI_API_KEY: 'your-api-key-here'
